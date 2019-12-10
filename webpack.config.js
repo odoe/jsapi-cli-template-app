@@ -94,8 +94,7 @@ module.exports = function(_, arg) {
           has: {
             "esri-native-promise": true
           }
-        },
-        userDefinedExcludes: ["arcgis-js-api/geometry/support/pe-wasm.js"]
+        }
       }),
 
       new HtmlWebPackPlugin({
