@@ -125,6 +125,7 @@ module.exports = function(_, arg) {
         description: 'My ArcGIS Template Application',
         background_color: '#0079c1',
         theme_color: '#0079c1',
+        ios: true,
         icons: [
           {
             src: path.resolve('src/assets/icon.png'),
