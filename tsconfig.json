@@ -26,6 +26,7 @@
   },
   "types": [
     "arcgis-js-api",
+    "intern",
     "moment"
   ],
   "include": [

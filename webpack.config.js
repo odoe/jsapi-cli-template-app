@@ -1,30 +1,25 @@
-const ArcGISPlugin = require("@arcgis/webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const WebpackPwaManifest = require("webpack-pwa-manifest");
-const WorkboxPlugin = require("workbox-webpack-plugin");
+const ArcGISPlugin = require('@arcgis/webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const path = require("path");
+const path = require('path');
 
 module.exports = function(_, arg) {
   const config = {
     entry: {
-      index: [
-        "./src/css/main.scss",
-        "@dojo/framework/shim/Promise",
-        "./src/index.ts"
-      ]
+      index: ['./src/css/main.scss', 'worker-config', '@dojo/framework/shim/Promise', './src/index.ts'],
     },
     output: {
-      filename: "[name].[chunkhash].js",
-      publicPath: ""
+      filename: '[name].[chunkhash].js',
+      publicPath: '',
     },
     optimization: {
       minimizer: [
@@ -34,54 +29,59 @@ module.exports = function(_, arg) {
           sourceMap: false,
           terserOptions: {
             output: {
-              comments: false
-            }
-          }
+              comments: false,
+            },
+          },
         }),
         new OptimizeCSSAssetsPlugin({
           cssProcessorOptions: {
             discardComments: {
-              removeAll: true
+              removeAll: true,
             },
             // Run cssnano in safe mode to avoid
             // potentially unsafe transformations.
-            safe: true
-          }
-        })
-      ]
+            safe: true,
+          },
+        }),
+      ],
     },
     module: {
       rules: [
         {
           test: /\.tsx?$/,
-          loader: "ts-loader",
-          options: {
-            transpileOnly: true
-          }
+          use: [
+            {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true,
+              },
+            },
+            'eslint-loader',
+          ],
         },
         {
           test: /\.html$/,
           use: [
             {
-              loader: "html-loader",
-              options: { minimize: false }
-            }
+              loader: 'html-loader',
+              options: { minimize: false },
+            },
           ],
-          exclude: /node_modules/
+          exclude: /node_modules/,
         },
         {
           test: /\.scss$/,
           use: [
             MiniCssExtractPlugin.loader,
-            "css-loader",
+            'css-loader',
             {
-              loader: "resolve-url-loader",
-              options: { includeRoot: true }
+              loader: 'resolve-url-loader',
+              options: { includeRoot: true },
             },
-            "sass-loader?sourceMap"
-          ]
-        }
-      ]
+            'sass-loader?sourceMap',
+          ],
+        },
+      ],
     },
     plugins: [
       new BundleAnalyzerPlugin(),
@@ -90,70 +90,67 @@ module.exports = function(_, arg) {
 
       new ArcGISPlugin({
         features: {
-          "3d": false,
+          '3d': false,
           has: {
-            "esri-native-promise": true
-          }
-        }
+            'esri-native-promise': true,
+          },
+        },
       }),
 
       new HtmlWebPackPlugin({
-        title: "ArcGIS Template Application",
-        template: "./src/index.ejs",
-        filename: "./index.html",
-        favicon: "./src/assets/favicon.ico",
-        chunksSortMode: "none",
-        inlineSource: ".(css)$",
-        mode: arg.mode
+        title: 'ArcGIS Template Application',
+        template: './src/index.ejs',
+        filename: './index.html',
+        favicon: './src/assets/favicon.ico',
+        chunksSortMode: 'none',
+        inlineSource: '.(css)$',
+        mode: arg.mode,
       }),
 
       new HtmlWebPackPlugin({
-        template: "./src/oauth-callback.html",
-        filename: "./oauth-callback.html",
-        chunksSortMode: "none",
-        inject: false
+        template: './src/oauth-callback.html',
+        filename: './oauth-callback.html',
+        chunksSortMode: 'none',
+        inject: false,
       }),
 
       new MiniCssExtractPlugin({
-        filename: "[name].[chunkhash].css",
-        chunkFilename: "[id].css"
+        filename: '[name].[chunkhash].css',
+        chunkFilename: '[id].css',
       }),
 
       new HtmlWebpackInlineSourcePlugin(),
 
       new WebpackPwaManifest({
-        name: "ArcGIS Application Template",
-        short_name: "ArcGISWebApp",
-        description: "My ArcGIS Template Application",
-        background_color: "#0079c1",
-        theme_color: "#0079c1",
+        name: 'ArcGIS Application Template',
+        short_name: 'ArcGISWebApp',
+        description: 'My ArcGIS Template Application',
+        background_color: '#0079c1',
+        theme_color: '#0079c1',
         icons: [
           {
-            src: path.resolve("src/assets/icon.png"),
-            sizes: [96, 128, 192, 256, 384, 512] // multiple sizes
-          }
-        ]
-      })
+            src: path.resolve('src/assets/icon.png'),
+            sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+          },
+        ],
+      }),
     ],
     resolve: {
-      modules: [
-        path.resolve(__dirname, "/src"),
-        path.resolve(__dirname, "node_modules/")
-      ],
-      extensions: [".ts", ".tsx", ".mjs", ".js", ".scss", ".css"]
+      modules: [path.resolve(__dirname, '/src'), path.resolve(__dirname, 'node_modules/')],
+      extensions: ['.ts', '.tsx', '.mjs', '.js', '.scss', '.css'],
     },
     node: {
       process: false,
       global: false,
-      fs: "empty"
-    }
+      fs: 'empty',
+    },
   };
 
-  if (arg.mode === "development") {
-    config.devtool = "source-map";
+  if (arg.mode === 'development') {
+    config.devtool = 'source-map';
   }
 
-  if (arg.mode === "production") {
+  if (arg.mode === 'production') {
     config.plugins.push(
       new WorkboxPlugin.GenerateSW({
         // Exclude images from the precache
@@ -165,28 +162,28 @@ module.exports = function(_, arg) {
             // Match any request ends with .png, .jpg, .jpeg or .svg.
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
             // Apply a cache-first strategy.
-            handler: "cacheFirst"
+            handler: 'cacheFirst',
           },
           {
             // Match any fonts
             urlPattern: /\.(?:eot|ttf|jpeg|woff|woff2)$/,
             // Apply a cache-first strategy.
-            handler: "cacheFirst"
+            handler: 'cacheFirst',
           },
           {
-            urlPattern: new RegExp("https://js.arcgis.com"),
-            handler: "staleWhileRevalidate"
+            urlPattern: new RegExp('https://js.arcgis.com'),
+            handler: 'staleWhileRevalidate',
           },
           {
-            urlPattern: new RegExp("https://basemaps.arcgis.com"),
-            handler: "staleWhileRevalidate"
+            urlPattern: new RegExp('https://basemaps.arcgis.com'),
+            handler: 'staleWhileRevalidate',
           },
           {
-            urlPattern: new RegExp("https://arcgis.com/sharing"),
-            handler: "staleWhileRevalidate"
-          }
-        ]
-      })
+            urlPattern: new RegExp('https://arcgis.com/sharing'),
+            handler: 'staleWhileRevalidate',
+          },
+        ],
+      }),
     );
   }
 
