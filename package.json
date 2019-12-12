@@ -50,7 +50,7 @@
     "serve": "webpack-dev-server --mode production --open --https --compress",
     "prettier": "prettier --write \"src/**/*.ts?(x)\"",
     "lint": "eslint --fix \"src/**/*.ts?(x)\"",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -64,7 +64,6 @@
     "@esri/calcite-app-components": "^4.10.0",
     "arcgis-js-api": "^4.14.0-next.20191210"
   },
-  "test": "jest",
   "arcgis": {
     "type": "jsapi"
   }
