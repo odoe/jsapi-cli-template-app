@@ -8,20 +8,20 @@ const TerserPlugin = require('terser-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
 const path = require('path');
 
 module.exports = function(_, arg) {
   const config = {
     entry: {
-      index: ['./src/css/main.scss', 'worker-config', '@dojo/framework/shim/Promise', './src/index.ts'],
+      index: ['./src/css/main.scss', '@dojo/framework/shim/Promise', './src/worker-config.ts', './src/index.ts'],
     },
     output: {
       filename: '[name].[chunkhash].js',
       publicPath: '',
     },
     optimization: {
+      minimize: true,
+      splitChunks: { minChunks: Infinity, chunks: 'all' },
       minimizer: [
         new TerserPlugin({
           cache: true,
@@ -84,8 +84,6 @@ module.exports = function(_, arg) {
       ],
     },
     plugins: [
-      new BundleAnalyzerPlugin(),
-
       new CleanWebpackPlugin(),
 
       new ArcGISPlugin({
